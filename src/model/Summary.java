@@ -7,24 +7,34 @@ public class Summary {
     private final BigDecimal interestSum;
 
     private final BigDecimal overpaymentProvisionSum;
-    private final BigDecimal totalLost;
+    private final BigDecimal totalLostSum;
+    private final BigDecimal totalCapital;
 
-
-    public Summary(BigDecimal interestSum, BigDecimal overpaymentProvisionSum, BigDecimal totalLost) {
+    public Summary(
+            final BigDecimal interestSum,
+            final BigDecimal overpaymentProvisionSum,
+            final BigDecimal totalLostSum,
+            final BigDecimal totalCapital
+    ) {
         this.interestSum = interestSum;
         this.overpaymentProvisionSum = overpaymentProvisionSum;
-        this.totalLost = totalLost;
+        this.totalLostSum = totalLostSum;
+        this.totalCapital = totalCapital;
     }
 
     public BigDecimal getInterestSum() {
         return interestSum;
     }
 
-    public BigDecimal getOverpaymentProvision() {
+    public BigDecimal getOverpaymentProvisionSum() {
         return overpaymentProvisionSum;
     }
 
-    public BigDecimal getTotalLost() {
-        return totalLost;
+    public BigDecimal getTotalLostSum() {
+        return totalLostSum;
+    }
+
+    public BigDecimal getTotalCapital() {
+        return totalCapital;
     }
 }

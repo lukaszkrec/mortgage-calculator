@@ -10,14 +10,10 @@ public class TimePoint {
     private final BigDecimal year;
     private final BigDecimal month;
 
-    public TimePoint(LocalDate date, BigDecimal year, BigDecimal month) {
+    public TimePoint(final LocalDate date, final BigDecimal year, final BigDecimal month) {
         this.date = date;
         this.year = year;
         this.month = month;
-    }
-
-    public LocalDate getDate() {
-        return date;
     }
 
     public BigDecimal getYear() {
@@ -28,12 +24,9 @@ public class TimePoint {
         return month;
     }
 
-    @Override
-    public String toString() {
-        return "TimePoint{" +
-                "date=" + date +
-                ", year=" + year +
-                ", month=" + month +
-                '}';
+    public LocalDate getDate() {
+        return date;
     }
+
+
 }

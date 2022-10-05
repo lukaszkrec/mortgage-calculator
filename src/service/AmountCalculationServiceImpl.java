@@ -12,14 +12,14 @@ public class AmountCalculationServiceImpl implements AmountCalculationService {
 
 
     public AmountCalculationServiceImpl(
-            ConstantAmountCalculationService constantAmountCalculationService,
-            DecreasingAmountCalculationService decreasingAmountCalculationService) {
+            final ConstantAmountCalculationService constantAmountCalculationService,
+            final DecreasingAmountCalculationService decreasingAmountCalculationService) {
         this.constantAmountCalculationService = constantAmountCalculationService;
         this.decreasingAmountCalculationService = decreasingAmountCalculationService;
     }
 
     @Override
-    public RateAmounts calculate(InputData inputData, Overpayment overpayment) {
+    public RateAmounts calculate(final InputData inputData, final Overpayment overpayment) {
         switch (inputData.getRateType()) {
             case CONSTANT:
                 return constantAmountCalculationService.calculate(inputData, overpayment);
@@ -31,7 +31,7 @@ public class AmountCalculationServiceImpl implements AmountCalculationService {
     }
 
     @Override
-    public RateAmounts calculate(InputData inputData, Overpayment overpayment, Rate previousRate) {
+    public RateAmounts calculate(final InputData inputData, final Overpayment overpayment, final Rate previousRate) {
         switch (inputData.getRateType()) {
             case CONSTANT:
                 return constantAmountCalculationService.calculate(inputData, overpayment, previousRate);

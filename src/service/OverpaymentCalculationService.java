@@ -7,5 +7,5 @@ import java.math.BigDecimal;
 
 public interface OverpaymentCalculationService {
 
-    Overpayment calculate(BigDecimal rateNumber, InputData inputData);
+    Overpayment calculate(final BigDecimal rateNumber, final InputData inputData);
 }

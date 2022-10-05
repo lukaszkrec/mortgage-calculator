@@ -12,22 +12,25 @@ public class OverpaymentCalculationServiceImpl implements OverpaymentCalculation
 
     @Override
     public Overpayment calculate(BigDecimal rateNumber, InputData inputData) {
-        BigDecimal overpaymentAmount = calculateAmount(rateNumber, inputData.getOverpaymentSchema())
+        BigDecimal overpaymentAmount = calculateOverpaymentAmount(rateNumber, inputData.getOverpaymentSchema())
                 .orElse(BigDecimal.ZERO);
         BigDecimal overpaymentProvision = calculateProvision(rateNumber, overpaymentAmount, inputData);
 
         return new Overpayment(overpaymentAmount, overpaymentProvision);
     }
 
-    private Optional<BigDecimal> calculateAmount(BigDecimal rateNumber, Map<Integer, BigDecimal> overpaymentSchema) {
+    private Optional<BigDecimal> calculateOverpaymentAmount(
+            final BigDecimal rateNumber,
+            Map<Integer, BigDecimal> overpaymentSchema
+    ) {
         for (Map.Entry<Integer, BigDecimal> entry : overpaymentSchema.entrySet()) {
-            if (rateNumber.equals(BigDecimal.valueOf(entry.getKey()))) {
+            if (BigDecimal.valueOf(entry.getKey()).equals(rateNumber)) {
                 return Optional.of(entry.getValue());
             }
         }
         return Optional.empty();
-
     }
+
 
     private BigDecimal calculateProvision(BigDecimal rateNumber, BigDecimal overpaymentAmount, InputData inputData) {
         if (BigDecimal.ZERO.equals(overpaymentAmount)) {
