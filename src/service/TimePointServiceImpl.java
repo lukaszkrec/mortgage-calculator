@@ -1,6 +1,7 @@
 package service;
 
 import model.InputData;
+import model.Rate;
 import model.TimePoint;
 
 import java.math.BigDecimal;
@@ -15,22 +16,30 @@ public class TimePointServiceImpl implements TimePointService {
 
     @Override
     public TimePoint calculate(BigDecimal rateNumber, InputData inputData) {
-        LocalDate date = calculateDate(rateNumber, inputData);
         BigDecimal year = calculateYear(rateNumber);
         BigDecimal month = calculateMonth(rateNumber);
+        LocalDate date = inputData.getRepaymentStartDate();
         return new TimePoint(date, year, month);
     }
 
-    private LocalDate calculateDate(BigDecimal rateNumber, InputData inputData) {
-        return inputData.getRepaymentStartDate().plus(rateNumber.subtract(BigDecimal.ONE).intValue(), ChronoUnit.MONTHS);
+    @Override
+    public TimePoint calculate(BigDecimal rateNumber, Rate previousRate) {
+        BigDecimal year = calculateYear(rateNumber);
+        BigDecimal month = calculateMonth(rateNumber);
+        LocalDate date = previousRate.getTimePoint().getDate().plus(1, ChronoUnit.MONTHS);
+        return new TimePoint(date, year, month);
+
     }
 
+
     private BigDecimal calculateYear(final BigDecimal rateNumber) {
-        return rateNumber.divide(YEAR, RoundingMode.UP).max(BigDecimal.ONE);
+        return rateNumber.divide(AmountCalculationService.YEAR, RoundingMode.UP).max(BigDecimal.ONE);
 
     }
 
     private BigDecimal calculateMonth(final BigDecimal rateNumber) {
-        return BigDecimal.ZERO.equals(rateNumber.remainder(YEAR)) ? YEAR : rateNumber.remainder(YEAR);
+        return BigDecimal.ZERO.equals(rateNumber.remainder(AmountCalculationService.YEAR))
+                ? YEAR
+                : rateNumber.remainder(AmountCalculationService.YEAR);
     }
 }

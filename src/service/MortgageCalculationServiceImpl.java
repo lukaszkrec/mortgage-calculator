@@ -14,8 +14,8 @@ public class MortgageCalculationServiceImpl implements MortgageCalculationServic
     private final SummaryService summaryService;
 
     public MortgageCalculationServiceImpl(
-            final PrintingService printingService,
             final RateCalculationService rateCalculationService,
+            final PrintingService printingService,
             final SummaryService summaryService
     ) {
         this.printingService = printingService;

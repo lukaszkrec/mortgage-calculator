@@ -17,8 +17,8 @@ public class RateCalculationServiceImpl implements RateCalculationService {
 
     public RateCalculationServiceImpl(
             final TimePointService timePointService,
-            final AmountCalculationService amountCalculationService,
             final OverpaymentCalculationService overpaymentCalculationService,
+            final AmountCalculationService amountCalculationService,
             final ResidualCalculateService residualCalculateService,
             final ReferenceCalculationService referenceCalculationService
     ) {

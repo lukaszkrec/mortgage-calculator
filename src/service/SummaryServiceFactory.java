@@ -1,6 +1,7 @@
 package service;
 
 import model.Rate;
+import model.RateAmounts;
 import model.Summary;
 
 import java.math.BigDecimal;
@@ -14,18 +15,24 @@ public class SummaryServiceFactory {
                     rates,
                     rate -> rate.getRateAmounts().getInterestAmount()
             );
-            BigDecimal provisions = calculate(
+            BigDecimal overpaymentProvisionsSum = calculate(
                     rates,
                     rate -> rate.getRateAmounts().getOverpayment().getProvisionAmount()
             );
-            BigDecimal totalLost = interestSum.add(provisions);
+            BigDecimal totalLostSum = interestSum.add(overpaymentProvisionsSum);
+            BigDecimal totalCapital = calculate(rates, rate -> totalCapital(rate.getRateAmounts()));
 
-            return new Summary(interestSum, provisions, totalLost);
+            return new Summary(interestSum, overpaymentProvisionsSum, totalLostSum, totalCapital);
         };
+    }
+
+    private static BigDecimal totalCapital(final RateAmounts rateAmounts) {
+        return rateAmounts.getCapitalAmount().add(rateAmounts.getOverpayment().getAmount());
     }
 
     private static BigDecimal calculate(List<Rate> rates, Function function) {
         BigDecimal sum = BigDecimal.ZERO;
+
         for (Rate rate : rates) {
             sum = sum.add(function.calculate(rate));
 
