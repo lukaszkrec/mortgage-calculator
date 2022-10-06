@@ -21,6 +21,7 @@ public interface PrintingService {
                     "%-8s %10s ";
 
     StringBuilder SEPARATOR = createSeparator('-', 180);
+
     String INTEREST_SUM = "SUMA ODSETEK: ";
     String OVERPAYMENT_PROVISION = "PROWIZJA ZA NADPLATY: ";
     String LOSTS_SUM = "SUMA STRAT: ";
@@ -50,18 +51,16 @@ public interface PrintingService {
     String NEW_LINE = "\n";
     String PERCENT = "% ";
 
-
-    @SuppressWarnings("SamePArameterValue")
+    @SuppressWarnings("SameParameterValue")
     private static StringBuilder createSeparator(char sign, int length) {
         StringBuilder sep = new StringBuilder();
         sep.append(String.valueOf(sign).repeat(Math.max(0, length)));
         return sep;
     }
 
-    void printInputDataInfo(final InputData inputData);
+    void printIntroInformation(InputData inputData);
 
     void printSchedule(List<Rate> rates, final InputData inputData);
-
 
     void printSummary(Summary summaryNoOverpayment);
 }

@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 public class MortgageReference {
 
 
+
     private final BigDecimal referenceAmount;
+
     private final BigDecimal referenceDuration;
 
     public MortgageReference(final BigDecimal referenceAmount, final BigDecimal referenceDuration) {

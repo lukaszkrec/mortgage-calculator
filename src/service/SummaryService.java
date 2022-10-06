@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface SummaryService {
 
-    Summary calculate(List<Rate> rates);
+    Summary calculateSummary(List<Rate> rates);
 }

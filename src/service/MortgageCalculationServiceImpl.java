@@ -9,6 +9,7 @@ import java.util.List;
 public class MortgageCalculationServiceImpl implements MortgageCalculationService {
 
     private final RateCalculationService rateCalculationService;
+
     private final PrintingService printingService;
 
     private final SummaryService summaryService;
@@ -18,21 +19,19 @@ public class MortgageCalculationServiceImpl implements MortgageCalculationServic
             final PrintingService printingService,
             final SummaryService summaryService
     ) {
-        this.printingService = printingService;
         this.rateCalculationService = rateCalculationService;
+        this.printingService = printingService;
         this.summaryService = summaryService;
     }
 
     @Override
     public void calculate(InputData inputData) {
-        printingService.printInputDataInfo(inputData);
+        printingService.printIntroInformation(inputData);
 
         List<Rate> rates = rateCalculationService.calculate(inputData);
-        Summary summary = summaryService.calculate(rates);
+        Summary summary = summaryService.calculateSummary(rates);
 
         printingService.printSummary(summary);
         printingService.printSchedule(rates, inputData);
-
-
     }
 }

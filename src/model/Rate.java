@@ -4,10 +4,15 @@ import java.math.BigDecimal;
 
 public class Rate {
 
+
     private final BigDecimal rateNumber;
+
     private final TimePoint timePoint;
+
     private final RateAmounts rateAmounts;
+
     private final MortgageResidual mortgageResidual;
+
     private final MortgageReference mortgageReference;
 
     public Rate(
@@ -39,7 +44,6 @@ public class Rate {
     public MortgageResidual getMortgageResidual() {
         return mortgageResidual;
     }
-
 
     public MortgageReference getMortgageReference() {
         return mortgageReference;

@@ -1,5 +1,3 @@
-package mortgage;
-
 import model.InputData;
 import model.MortgageType;
 import model.Overpayment;
@@ -23,10 +21,10 @@ public class MortgageCalculator {
                 .withAmount(new BigDecimal("296192.11"))
                 .withMonthsDuration(BigDecimal.valueOf(360))
                 .withOverpaymentReduceWay(Overpayment.REDUCE_PERIOD)
-                .withType(MortgageType.CONSTANT)
+                .withType(MortgageType.DECREASING)
                 .withOverpaymentSchema(overpaymentSchema);
 
-        PrintingService printingService = new PrintingServiceIImpl();
+        PrintingService printingService = new PrintingServiceImpl();
         RateCalculationService rateCalculationService = new RateCalculationServiceImpl(
                 new TimePointServiceImpl(),
                 new OverpaymentCalculationServiceImpl(),

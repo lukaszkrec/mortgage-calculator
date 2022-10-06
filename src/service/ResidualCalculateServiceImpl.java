@@ -12,20 +12,27 @@ public class ResidualCalculateServiceImpl implements ResidualCalculateService {
 
     @Override
     public MortgageResidual calculate(RateAmounts rateAmounts, InputData inputData) {
-        BigDecimal residualAmount = calculateResidualAmount(rateAmounts, inputData.getAmount());
-        BigDecimal residualDuration = inputData.getMonthsDuration().subtract(BigDecimal.ONE);
-
-        return new MortgageResidual(residualAmount, residualDuration);
+        if (BigDecimal.ZERO.equals(inputData.getAmount())) {
+            return new MortgageResidual(BigDecimal.ZERO, BigDecimal.ZERO);
+        } else {
+            BigDecimal residualAmount = calculateResidualAmount(inputData.getAmount(), rateAmounts);
+            BigDecimal residualDuration = calculateResidualDuration(inputData, residualAmount, inputData.getMonthsDuration(), rateAmounts);
+            return new MortgageResidual(residualAmount, residualDuration);
+        }
     }
 
     @Override
     public MortgageResidual calculate(RateAmounts rateAmounts, final InputData inputData, Rate previousRate) {
-        MortgageResidual residual = previousRate.getMortgageResidual();
+        BigDecimal previousResidualAmount = previousRate.getMortgageResidual().getResidualAmount();
+        BigDecimal previousResidualDuration = previousRate.getMortgageResidual().getResidualDuration();
 
-        BigDecimal residualAmount = calculateResidualAmount(rateAmounts, residual.getResidualAmount());
-        BigDecimal residualDuration = residual.getResiudualDuration().subtract(BigDecimal.ONE);
-
-        return new MortgageResidual(residualAmount, residualDuration);
+        if (BigDecimal.ZERO.equals(previousResidualAmount)) {
+            return new MortgageResidual(BigDecimal.ZERO, BigDecimal.ZERO);
+        } else {
+            BigDecimal residualAmount = calculateResidualAmount(previousResidualAmount, rateAmounts);
+            BigDecimal residualDuration = calculateResidualDuration(inputData, residualAmount, previousResidualDuration, rateAmounts);
+            return new MortgageResidual(residualAmount, residualDuration);
+        }
     }
 
     private BigDecimal calculateResidualDuration(
@@ -34,6 +41,7 @@ public class ResidualCalculateServiceImpl implements ResidualCalculateService {
             BigDecimal previousResidualDuration,
             RateAmounts rateAmounts
     ) {
+
         if (rateAmounts.getOverpayment().getAmount().compareTo(BigDecimal.ZERO) > 0) {
             switch (inputData.getRateType()) {
                 case CONSTANT:
@@ -41,29 +49,23 @@ public class ResidualCalculateServiceImpl implements ResidualCalculateService {
                 case DECREASING:
                     return calculateDecreasingResidualDuration(residualAmount, rateAmounts);
                 default:
-                    throw new MortgageException();
+                    throw new MortgageException("Case not handled");
             }
         } else {
             return previousResidualDuration.subtract(BigDecimal.ONE);
         }
-
     }
 
     private BigDecimal calculateDecreasingResidualDuration(BigDecimal residualAmount, RateAmounts rateAmounts) {
-        return residualAmount.divide(rateAmounts.getCapitalAmount(), 0, RoundingMode.HALF_UP);
+        return residualAmount.divide(rateAmounts.getCapitalAmount(), 0, RoundingMode.CEILING);
     }
 
     @SuppressWarnings("UnnecessaryLocalVariable")
-    private BigDecimal calculateConstantResidualDuration(
-            InputData inputData,
-            BigDecimal residualAmount,
-            RateAmounts rateAmounts
-    ) {
+    private BigDecimal calculateConstantResidualDuration(InputData inputData, BigDecimal residualAmount, RateAmounts rateAmounts) {
         BigDecimal q = AmountCalculationService.calculateQ(inputData.getInterestPercent());
+
         BigDecimal xNumerator = rateAmounts.getRateAmount();
-        BigDecimal xDenominator = rateAmounts
-                .getRateAmount()
-                .subtract(residualAmount.multiply(q.subtract(BigDecimal.ONE)));
+        BigDecimal xDenominator = rateAmounts.getRateAmount().subtract(residualAmount.multiply(q.subtract(BigDecimal.ONE)));
 
         BigDecimal x = xNumerator.divide(xDenominator, 10, RoundingMode.HALF_UP);
         BigDecimal y = q;
@@ -74,8 +76,8 @@ public class ResidualCalculateServiceImpl implements ResidualCalculateService {
         return logX.divide(logY, 0, RoundingMode.CEILING);
     }
 
-    private BigDecimal calculateResidualAmount(final RateAmounts rateAmounts, final BigDecimal amount) {
-        return amount
+    private BigDecimal calculateResidualAmount(final BigDecimal residualAmount, final RateAmounts rateAmounts) {
+        return residualAmount
                 .subtract(rateAmounts.getCapitalAmount())
                 .subtract(rateAmounts.getOverpayment().getAmount())
                 .max(BigDecimal.ZERO);

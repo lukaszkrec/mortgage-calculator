@@ -12,16 +12,15 @@ public class DecreasingAmountCalculationServiceImpl implements DecreasingAmountC
 
 
     @Override
-    public RateAmounts calculate(InputData inputData, Overpayment overpayment) {
+    public RateAmounts calculate(final InputData inputData, final Overpayment overpayment) {
         BigDecimal interestPercent = inputData.getInterestPercent();
 
-        BigDecimal residualAmount = inputData.getAmount();
-        BigDecimal residualDuration = inputData.getMonthsDuration();
+        final BigDecimal residualAmount = inputData.getAmount();
+        final BigDecimal residualDuration = inputData.getMonthsDuration();
 
         BigDecimal interestAmount = AmountCalculationService.calculateInterestAmount(residualAmount, interestPercent);
-        BigDecimal capitalAmount = AmountCalculationService
-                .compareCapitalWithResidual(calculateDecreasingCapitalAmount(
-                        residualAmount, residualDuration), residualAmount);
+        BigDecimal capitalAmount = AmountCalculationService.compareCapitalWithResidual(
+                calculateDecreasingCapitalAmount(residualAmount, residualDuration), residualAmount);
         BigDecimal rateAmount = capitalAmount.add(interestAmount);
 
         return new RateAmounts(rateAmount, interestAmount, capitalAmount, overpayment);
@@ -36,19 +35,18 @@ public class DecreasingAmountCalculationServiceImpl implements DecreasingAmountC
         BigDecimal referenceDuration = previousRate.getMortgageReference().getReferenceDuration();
 
         BigDecimal interestAmount = AmountCalculationService.calculateInterestAmount(residualAmount, interestPercent);
-        BigDecimal capitalAmount = AmountCalculationService
-                .compareCapitalWithResidual(calculateDecreasingCapitalAmount(
-                        referenceAmount, referenceDuration), residualAmount);
+        BigDecimal capitalAmount = AmountCalculationService.compareCapitalWithResidual(
+                calculateDecreasingCapitalAmount(referenceAmount, referenceDuration), residualAmount);
         BigDecimal rateAmount = capitalAmount.add(interestAmount);
 
-
         return new RateAmounts(rateAmount, interestAmount, capitalAmount, overpayment);
-
     }
 
-    private BigDecimal calculateDecreasingCapitalAmount(final BigDecimal residualAmount, final BigDecimal residualDuration) {
+    private BigDecimal calculateDecreasingCapitalAmount(
+            final BigDecimal residualAmount,
+            final BigDecimal residualDuration
+    ) {
         return residualAmount.divide(residualDuration, 2, RoundingMode.HALF_UP);
-
     }
 
 }

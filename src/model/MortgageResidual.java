@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 public class MortgageResidual {
 
     private final BigDecimal residualAmount;
+
     private final BigDecimal residualDuration;
 
     public MortgageResidual(final BigDecimal residualAmount, final BigDecimal residualDuration) {
@@ -14,10 +15,10 @@ public class MortgageResidual {
     }
 
     public BigDecimal getResidualAmount() {
-        return residualAmount.setScale(2, RoundingMode.HALF_UP);
+        return residualAmount;
     }
 
-    public BigDecimal getResiudualDuration() {
+    public BigDecimal getResidualDuration() {
         return residualDuration;
     }
 

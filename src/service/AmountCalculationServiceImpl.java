@@ -7,26 +7,27 @@ import model.RateAmounts;
 
 public class AmountCalculationServiceImpl implements AmountCalculationService {
 
-    private final ConstantAmountCalculationService constantAmountCalculationService;
-    private final DecreasingAmountCalculationService decreasingAmountCalculationService;
+    private final ConstantAmountCalculationService constantAmountsCalculationService;
 
+    private final DecreasingAmountCalculationService decreasingAmountsCalculationService;
 
     public AmountCalculationServiceImpl(
-            final ConstantAmountCalculationService constantAmountCalculationService,
-            final DecreasingAmountCalculationService decreasingAmountCalculationService) {
-        this.constantAmountCalculationService = constantAmountCalculationService;
-        this.decreasingAmountCalculationService = decreasingAmountCalculationService;
+            final ConstantAmountCalculationService constantAmountsCalculationService,
+            final DecreasingAmountCalculationService decreasingAmountsCalculationService
+    ) {
+        this.constantAmountsCalculationService = constantAmountsCalculationService;
+        this.decreasingAmountsCalculationService = decreasingAmountsCalculationService;
     }
 
     @Override
     public RateAmounts calculate(final InputData inputData, final Overpayment overpayment) {
         switch (inputData.getRateType()) {
             case CONSTANT:
-                return constantAmountCalculationService.calculate(inputData, overpayment);
+                return constantAmountsCalculationService.calculate(inputData, overpayment);
             case DECREASING:
-                return decreasingAmountCalculationService.calculate(inputData, overpayment);
+                return decreasingAmountsCalculationService.calculate(inputData, overpayment);
             default:
-                throw new MortgageException();
+                throw new MortgageException("Case not handled");
         }
     }
 
@@ -34,12 +35,13 @@ public class AmountCalculationServiceImpl implements AmountCalculationService {
     public RateAmounts calculate(final InputData inputData, final Overpayment overpayment, final Rate previousRate) {
         switch (inputData.getRateType()) {
             case CONSTANT:
-                return constantAmountCalculationService.calculate(inputData, overpayment, previousRate);
+                return constantAmountsCalculationService.calculate(inputData, overpayment, previousRate);
             case DECREASING:
-                return decreasingAmountCalculationService.calculate(inputData, overpayment, previousRate);
+                return decreasingAmountsCalculationService.calculate(inputData, overpayment, previousRate);
             default:
-                throw new MortgageException();
+                throw new MortgageException("Case not handled");
         }
     }
+
 
 }

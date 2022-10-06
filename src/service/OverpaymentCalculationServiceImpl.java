@@ -11,11 +11,11 @@ public class OverpaymentCalculationServiceImpl implements OverpaymentCalculation
 
 
     @Override
-    public Overpayment calculate(BigDecimal rateNumber, InputData inputData) {
-        BigDecimal overpaymentAmount = calculateOverpaymentAmount(rateNumber, inputData.getOverpaymentSchema())
-                .orElse(BigDecimal.ZERO);
-        BigDecimal overpaymentProvision = calculateProvision(rateNumber, overpaymentAmount, inputData);
-
+    public Overpayment calculate(final BigDecimal rateNumber, final InputData inputData) {
+        BigDecimal overpaymentAmount = calculateOverpaymentAmount(
+                rateNumber,
+                inputData.getOverpaymentSchema()).orElse(BigDecimal.ZERO);
+        BigDecimal overpaymentProvision = calculateOverpaymentProvision(rateNumber, overpaymentAmount, inputData);
         return new Overpayment(overpaymentAmount, overpaymentProvision);
     }
 
@@ -31,15 +31,19 @@ public class OverpaymentCalculationServiceImpl implements OverpaymentCalculation
         return Optional.empty();
     }
 
-
-    private BigDecimal calculateProvision(BigDecimal rateNumber, BigDecimal overpaymentAmount, InputData inputData) {
+    private BigDecimal calculateOverpaymentProvision(
+            final BigDecimal rateNumber,
+            final BigDecimal overpaymentAmount,
+            final InputData inputData
+    ) {
         if (BigDecimal.ZERO.equals(overpaymentAmount)) {
             return BigDecimal.ZERO;
-
         }
-        if (rateNumber.compareTo(inputData.getOverpaymentProvisionMonth()) > 0) {
+
+        if (rateNumber.compareTo(inputData.getOverpaymentProvisionMonths()) > 0) {
             return BigDecimal.ZERO;
         }
+
         return overpaymentAmount.multiply(inputData.getOverpaymentProvisionPercent());
     }
 }
